@@ -22,6 +22,14 @@ def get_monitor_value(logs, monitor):
 
 
 class AccHistoryPlot(Callback):
+    # 시각화 해주는 함수인듯 !
+    # [stage, fold] = [ 'Conjoint-CNN', 현재 for 문으로 순회하고 있는 값. range(0, 5) ]
+    # [X_test, y_test] = [ X_test_conjoint_cnn : 3차원. [각 pN_conjoint 정규화값 * VECTOR_REPETITION_CNN. ] , y_test ]
+    # data_name = RPI488, 
+    # result_save_path = os.path.dirname(script_dir) + '/result/data/RPI488/... , 
+    # validate=0, 
+    # plot_epoch_gap=10
+    
     def __init__(self, stage_infos, test_data, data_name, result_save_path, validate=0, plot_epoch_gap=30, verbose=1):
         super(AccHistoryPlot, self).__init__()
         self.stage, self.fold = stage_infos
@@ -134,6 +142,8 @@ class EarlyStopping(Callback):
             If False, the model weights obtained at the last step of
             training are used.
     """
+    
+    # MONITOR = 'acc', MIN_DELTA = 0.0, patience=10, verbose=1, mode='auto', restore_best_weights=True
 
     def __init__(self,
                  monitor='val_loss',
@@ -165,9 +175,9 @@ class EarlyStopping(Callback):
             self.monitor_op = np.less
         elif mode == 'max':
             self.monitor_op = np.greater
-        else:
-            if 'acc' in self.monitor:
-                self.monitor_op = np.greater
+        else: # mode == 'auto'
+            if 'acc' in self.monitor: # True
+                self.monitor_op = np.greater # numpy의 연산 greater를 monitor_op에 대입시키는 것임.
             else:
                 self.monitor_op = np.less
 

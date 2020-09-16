@@ -1,0 +1,83 @@
+[33mcommit a894a3d2b712a49ce6ffd7bc04f6c2356aed8bc0[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: pengeace <Pengeace@users.noreply.github.com>
+Date:   Mon May 11 12:01:19 2020 +0800
+
+    Update readme.md
+
+[33mcommit 301eb11ad1b9001800afa4a261b9e03b8167608c[m
+Author: chengpengeace <chengpengeace@gmail.com>
+Date:   Mon May 11 11:46:07 2020 +0800
+
+    Rename NPinter_rna_seq.fa to NPInter_rna_seq.fa
+
+[33mcommit c0041d69c02b8223631ba58ed2803fa93ac82e1e[m
+Author: pengeace <Pengeace@users.noreply.github.com>
+Date:   Mon May 11 11:41:16 2020 +0800
+
+    Rename NPinter_protein_seq.fa to NPInter_protein_seq.fa
+
+[33mcommit 5c026729f575cd76b43e7e3323ae6b7a4e682ff2[m
+Author: chengpengeace <chengpengeace@gmail.com>
+Date:   Mon May 11 11:34:02 2020 +0800
+
+    Add readme for results on April 29, 2020.
+
+[33mcommit 1e471c65e95643d0ec621395873368cf1d2accfd[m
+Author: chengpengeace <chengpengeace@gmail.com>
+Date:   Thu Apr 30 01:20:40 2020 +0800
+
+    Update codes and fix potential bugs.
+
+[33mcommit 0c93459ef57250f73219558883f8f332881e434d[m
+Author: 彭程 <chengpengeace@gmail.com>
+Date:   Fri Jul 26 16:35:17 2019 +0800
+
+    result reduction
+
+[33mcommit 6b3f3fef637ef99d3d95a0149bdba4cfcec8a9c2[m
+Author: 彭程 <chengpengeace@gmail.com>
+Date:   Tue Jul 23 17:18:24 2019 +0800
+
+    Update rpiter.py
+
+[33mcommit a6573bb0c1ab76e3bc1a98bd9495e21f7cbd1c8b[m
+Author: pengeace <Pengeace@users.noreply.github.com>
+Date:   Mon Jul 22 18:13:32 2019 +0800
+
+    Create readme.md
+
+[33mcommit ce1255c8a305589fd6900e94055839f5bfde073f[m
+Author: 彭程 <chengpengeace@gmail.com>
+Date:   Mon Jul 22 15:10:06 2019 +0800
+
+    Little change.
+
+[33mcommit ff28e37e1445809c6f83677f2c5fcd86beec778d[m
+Author: pengeace <Pengeace@users.noreply.github.com>
+Date:   Wed Feb 20 22:18:46 2019 +0800
+
+    Update README.md
+
+[33mcommit 8be5763b67c5a6f7345d1b59ed62582cd6166933[m
+Author: Pengeace <Pengeace@users.noreply.github.com>
+Date:   Wed Jan 30 19:13:41 2019 +0800
+
+    Update README.md
+
+[33mcommit 83d0131c3c18cec6818247a894a0969916c09a31[m
+Author: Pengeace <Pengeace@users.noreply.github.com>
+Date:   Mon Jan 28 11:00:59 2019 +0800
+
+    Update.
+
+[33mcommit dcfbcf876b1e4684e5b4259980bbdfc168fb0ea5[m
+Author: Pengeace <Pengeace@users.noreply.github.com>
+Date:   Mon Jan 28 10:53:23 2019 +0800
+
+    Update.
+
+[33mcommit c94083a8cb7033f331807930b395bf7cd1a60d1b[m
+Author: Pengeace <Pengeace@users.noreply.github.com>
+Date:   Mon Jan 28 10:47:31 2019 +0800
+
+    Initial commit

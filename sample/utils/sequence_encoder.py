@@ -20,7 +20,11 @@ class ProEncoder:
 
     def __init__(self, WINDOW_P_UPLIMIT, WINDOW_P_STRUCT_UPLIMIT, CODING_FREQUENCY, VECTOR_REPETITION_CNN,
                  TRUNCATION_LEN=None, PERIOD_EXTENDED=None):
-
+        #WINDOW_P_UPLIMIT : protein feature를 최대 몇자리까지 쓸것인가를 저장한 상수. 3
+        #WINDOW_P_STRUCT_UPLIMIT : struct 정보의 protein feature를 최대 몇자리까지 쓸것인가를 저장한 상수. 3
+        #CODING_FREQUENCY : 전역상수. True.
+        #VECTOR_REPETITION_CNN : 전역상수. 1.
+        
         self.WINDOW_P_UPLIMIT = WINDOW_P_UPLIMIT
         self.WINDOW_P_STRUCT_UPLIMIT = WINDOW_P_STRUCT_UPLIMIT
         self.CODING_FREQUENCY = CODING_FREQUENCY
@@ -33,10 +37,10 @@ class ProEncoder:
         k_mers = ['']
         self.k_mer_list = []
         self.k_mer_map = {}
-        for T in range(self.WINDOW_P_UPLIMIT):
+        for T in range(self.WINDOW_P_UPLIMIT): # 3
             temp_list = []
             for k_mer in k_mers:
-                for x in self.elements:
+                for x in self.elements:# AIYHRDC 
                     temp_list.append(k_mer + x)
             k_mers = temp_list
             self.k_mer_list += temp_list
@@ -49,7 +53,7 @@ class ProEncoder:
         self.k_mer_struct_map = {}
         for T in range(self.WINDOW_P_STRUCT_UPLIMIT):
             temp_list = []
-            for k_mer in k_mers:
+            for k_mer in k_mers: 
                 for s in self.structs:
                     temp_list.append(k_mer + s)
             k_mers = temp_list
@@ -59,12 +63,20 @@ class ProEncoder:
 
         # table for amino acid clusters
         self.transtable = str.maketrans(self.pro_intab, self.pro_outtab)
-
+        
+        #k_mer_map : feature들을 key값으로, 그것의 index를 value값으로 가지는 딕셔너리
+        # k_mer_map 0~6 : 한 자리 알파벳으로 이루어진 원소
+        # k_mer_map 7~55 : 두 자리 알파벳으로 이루어진 원소
+        # k_mer_map 56~398 : 세 자리 알파벳으로 이루어진 원소
+        
+        #k_mer_list : feature들이 sorting되어 있는 리스트
 
         # print(len(self.k_mer_list))
         # print(self.k_mer_list)
+        #print('self.k_mer_map : {}'.format(self.k_mer_map))
         # print(len(self.k_mer_struct_list))
         # print(self.k_mer_struct_list)
+
 
     def encode_conjoint_previous(self, seq):
         seq = seq.translate(self.transtable)
@@ -86,41 +98,66 @@ class ProEncoder:
         result += list(vec)
         return np.array(result)
 
-    def encode_conjoint(self, seq):
-        seq = seq.translate(self.transtable)
-        seq = ''.join([x for x in seq if x in self.elements])
+    def encode_conjoint(self, seq): 
+        # sequence에서 각각의 feature들이 포함되는 횟수를 세서 정규화시킴. improved CTF. 우리 프로젝트랑 똑같음.
+        # 정규화시키는 방법이 다름. min_max 정규화가 아니고, value를 최대값으로 나눔.
+        
+        seq = seq.translate(self.transtable) # seq는 문자열 # 'AGVILFPYMTSHNQWRKDEC' -> 'AAAIIIIYYYYHHHHRRDDC' 이렇게 바꿈.
+        #print('seq before join : {}'.format(seq)) # 이건 AIYHRDC로만 이루어졌나 아닌가 체크하는 로직인 듯
+        #seq = ''.join([x for x in seq if x in self.elements]) # seq는 문자열.
+        #print('seq after_ join : {}'.format(seq))
         seq_len = len(seq)
         if seq_len == 0:
             return 'Error'
         result = []
         offset = 0
-        for K in range(1, self.WINDOW_P_UPLIMIT + 1):
-            vec = [0.0] * (self.element_number ** K)
+        for K in range(1, self.WINDOW_P_UPLIMIT + 1): # range(1, 4)
+            # K는 feature의 길이임. 
+            
+            vec = [0.0] * (self.element_number ** K) 
+            # vec배열을 7**K 개의 0.0 (float)가 담긴 배열로 초기화
+            # element_number : 7
+            
             counter = seq_len - K + 1
-            for i in range(seq_len - K + 1):
-                k_mer = seq[i:i + K]
-                vec[self.k_mer_map[k_mer] - offset] += 1
+            for i in range(seq_len - K + 1): # K=1일 때는 sequence의 length만큼 순회. K=2일 때는 sequence의 length - 1만큼 순회. K=일때는 ...
+                k_mer = seq[i:i + K] # feature를 순회하면서 K 길이의 문자열을 추출한거.
+                vec[self.k_mer_map[k_mer] - offset] += 1 # vec 리스트에서 k_mer의 인덱스에 해당하는 자리에 카운트를 1 올림.
             vec = np.array(vec)
-            offset += vec.size
+            offset += vec.size # K=1 일 때 vec.size = 7, K=2일 때 vec.size = 49, K=3일 때 vec.size = 343
+            #print('self.k_mer_map[k_mer] : {}'.format(self.k_mer_map[k_mer]))
+            #print('vec : {0} - vec.size : {1}'.format(vec, vec.size))
             if self.CODING_FREQUENCY:
                 vec = vec / vec.max()
             result += list(vec)
+            #print('len of result : {}'.format(len(result)))
+        #print('result : {}'.format(result))
+        
+        # result 0~6 : 한 자리 알파벳으로 이루어진 원소
+        # result 7~55 : 두 자리 알파벳으로 이루어진 원소
+        # result 56~398 : 세 자리 알파벳으로 이루어진 원소
         return np.array(result)
 
     def encode_conjoint_struct(self, seq, struct):
-        seq = seq.translate(self.transtable)
+        # seq length와 struct length는 같음. 헐.
+
+        
+        seq = seq.translate(self.transtable) # seq는 문자열 # 'AGVILFPYMTSHNQWRKDEC' -> 'AAAIIIIYYYYHHHHRRDDC' 이렇게 바꿈.
         seq_temp = []
         struct_temp = []
-        for i in range(len(seq)):
+        for i in range(len(seq)):     
             if seq[i] in self.elements:
+                # AIYHRDC 의 원소가 AIYHRDC안에 있으면, 0~len(seq)-1 의 모든 인덱스에 대해 translate된 seq[i]와 원본 struct[i]를 배열로 보관함.
+                
                 seq_temp.append(seq[i])
                 struct_temp.append(struct[i])
-        seq = ''.join(seq_temp)
-        struct = ''.join(struct_temp)
+        seq = ''.join(seq_temp) # 여기의 seq는 translate된 seq와 같음. (그냥 검증로직인듯)
+        struct = ''.join(struct_temp) # 그냥 원본 struct와 같음.
         seq_len = len(seq)
         if seq_len == 0:
             return 'Error'
 
+        
+        # encode_conjoint의 sequence 인코딩 방식과 정확하게 동일함.
         result_seq = []
         offset_seq = 0
         for K in range(1, self.WINDOW_P_UPLIMIT + 1):
@@ -128,7 +165,7 @@ class ProEncoder:
             counter = seq_len - K + 1
             for i in range(seq_len - K + 1):
                 k_mer = seq[i:i + K]
-                vec_seq[self.k_mer_map[k_mer] - offset_seq] += 1
+                vec_seq[self.k_mer_map[k_mer] - offset_seq] += 1 # vec 리스트에서 k_mer의 인덱스에 해당하는 자리에 카운트를 1 올림.
             vec_seq = np.array(vec_seq)
             offset_seq += vec_seq.size
             if self.CODING_FREQUENCY:
@@ -140,6 +177,9 @@ class ProEncoder:
         offset_struct = 0
         for K in range(1, self.WINDOW_P_STRUCT_UPLIMIT + 1):
             vec_struct = [0.0] * (self.struct_kind ** K)
+            # vec배열을 3^K 개의 0.0 (float)가 담긴 배열로 초기화
+            # element_number : 3
+            
             counter = seq_len - K + 1
             for i in range(seq_len - K + 1):
                 k_mer_struct = struct[i:i + K]
@@ -149,6 +189,11 @@ class ProEncoder:
             if self.CODING_FREQUENCY:
                 vec_struct = vec_struct / vec_struct.max()
             result_struct += list(vec_struct)
+            
+        # sequence를 정규화한 배열과 struct를 정규화한 배열을 concatenate시킴.
+        # result_seq len : 399
+        # result_struct len : 39 -> 3 + 9 + 27. feature의 알파벳 개수가 3개여서 그럼.
+        # 결과 : 438 
         return np.array(result_seq + result_struct)
 
     def encode_conjoint_cnn(self, seq):
